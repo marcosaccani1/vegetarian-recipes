@@ -13,14 +13,19 @@ function RecipeDetail() {
 
   useEffect(() => {
     const fetchRecipeDetails = async () => {
-      const data = await getRecipeDetails(id);
+      try {
+        setLoading(true);
+        setErrorMessage("");
 
-      if (!data) {
-        setErrorMessage("Dettagli della ricetta non disponibili.");
+        const data = await getRecipeDetails(id);
+        setRecipe(data);
+      } catch (error) {
+        setErrorMessage(
+          "Si è verificato un errore durante il caricamento dei dettagli della ricetta."
+        );
+      } finally {
+        setLoading(false);
       }
-
-      setRecipe(data);
-      setLoading(false);
     };
 
     fetchRecipeDetails();
@@ -31,7 +36,14 @@ function RecipeDetail() {
   }
 
   if (errorMessage) {
-    return <p className="error-message">{errorMessage}</p>;
+    return (
+      <main className="page-container">
+        <Link to="/" className="back-link">
+          ← Torna alla ricerca
+        </Link>
+        <p className="error-message">{errorMessage}</p>
+      </main>
+    );
   }
 
   return (
@@ -67,9 +79,7 @@ function RecipeDetail() {
             {recipe.extendedIngredients?.length > 0 ? (
               <ul className="ingredients-list">
                 {recipe.extendedIngredients.map((ingredient) => (
-                  <li key={ingredient.id}>
-                    {ingredient.original}
-                  </li>
+                  <li key={ingredient.id}>{ingredient.original}</li>
                 ))}
               </ul>
             ) : (

@@ -1,49 +1,17 @@
-import { useEffect, useState } from "react";
-
 import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 import Loader from "../components/Loader";
-import { searchRecipes } from "../api/spoonacular";
+import useRecipes from "../hooks/useRecipes";
 
 function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  useEffect(() => {
-  const loadRecipes = async () => {
-    setLoading(true);
-
-    const data = await searchRecipes("pasta");
-
-    setRecipes(data);
-    setLoading(false);
-  };
-
-  loadRecipes();
-  }, []);
-
-  const handleSearch = async (event) => {
-    event.preventDefault();
-
-    if (!searchTerm.trim()) {
-      setErrorMessage("Inserisci il nome di una ricetta.");
-      return;
-    }
-
-    setLoading(true);
-    setErrorMessage("");
-
-    const data = await searchRecipes(searchTerm);
-
-    if (data.length === 0) {
-      setErrorMessage("Nessuna ricetta trovata.");
-    }
-
-    setRecipes(data);
-    setLoading(false);
-  };
+  const {
+    searchTerm,
+    setSearchTerm,
+    recipes,
+    loading,
+    errorMessage,
+    handleSearch,
+  } = useRecipes();
 
   return (
     <main className="page-container">
